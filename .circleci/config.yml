@@ -1,41 +1,84 @@
 version: 2.1
 
 commands:
-  destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
-      # Add parameter here   
-    steps:
-      - run:
-          name: Destroy environments
-          when: on_fail
-          command: |
-            # Your code here
-            exit 1
+    install_awscli:
+       description: Install AWS CLI v2
+       steps:
+         - run:
+             name: Install AWS CLI v2
+             command: |
+                curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                unzip awscliv2.zip
+                sudo ./aws/install
+    install_ansible:
+       description: Install Ansible 
+       steps:
+         - run:
+             name: Install Ansible 
+             command: |
+                sudo apt update 
+                sudo apt install software-properties-common -y
+                sudo add-apt-repository --yes --update ppa:ansible/ansible
+                sudo apt install ansible -y
 
-  revert-migrations:
-    description: Revert the last migration if successfully run in the current workflow.
-    parameters:
-      # Add parameter here     
-    steps:
-      - run:
-          name: Revert migrations
-          # Add when this will run
-          command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = 1
-            if(( $SUCCESS==1 )); 
-            then
-            #  cd ~/project/backend
-            #  npm install
-            #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
-            fi
+    install_nodejs: 
+      description: Install Node.js 13 
+      steps:
+        - run:
+            name: Install Node.js 13 
+            command: |
+               curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash - 
+               sudo apt install -y nodejs 
+
+    destroy-environment:
+      description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+
+      steps:
+        - run:
+            name: Destroy environments
+            when: on_fail
+            command: |
+              aws s3 rm "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
+              aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+              aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+      # parameters:
+      #   Workflow_ID: 
+      #     type: string
+      #     default: ${CIRCLE_WORKFLOW_ID:0:7}
+      # steps:
+      #   - run:
+      #       name: Destroy environments
+      #       when: on_fail
+      #       command: |
+      #         aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --recursive # empty bucket 
+
+      #         aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >>  # Delete frontend 
+
+      #         aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.Workflow_ID >>   # Delete backend
+    revert-migrations:
+      description: Revert the last migration if successfully run in the current workflow.
+      parameters:
+        Workflow_ID:
+          type: string
+          default: ${CIRCLE_WORKFLOW_ID:0:7} 
+      steps:
+        - run:
+            name: Revert migrations
+            when: on_fail
+            command: |
+              SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.Workflow_ID >>)
+
+              if (( $SUCCESS == 1 ));
+              then
+                cd ~/project/backend
+                npm install
+                npm run migration:revert
+              fi
             
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -43,15 +86,17 @@ jobs:
       - run:
           name: Build front-end
           command: |
-            # Your code here
-            exit 1
+            cd frontend 
+            npm install 
+            npm run build 
+
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
 
   build-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -59,11 +104,13 @@ jobs:
       - run:
           name: Back-end build
           command: |
-             # Your code here
-             exit 1
+             cd backend
+             npm install 
+             npm run build 
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+
 
   test-frontend:
     docker:
