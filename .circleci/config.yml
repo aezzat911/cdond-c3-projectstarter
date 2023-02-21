@@ -155,14 +155,14 @@ jobs:
       - restore_cache:
            keys: [frontend-scan]
       - run: 
-           name: frontend scan 
-           command: |
-             cd frontend
-            npm audit fix --audit-level=critical --force
-            npm audit fix --audit-level=critical --force
-            # If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
-            #npm audit --audit-level=critical
-            #  npm install --no-audit
+          name: frontend scan 
+          command: |
+            cd frontend
+          npm audit fix --audit-level=critical --force
+          npm audit fix --audit-level=critical --force
+          # If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
+          #npm audit --audit-level=critical
+          #  npm install --no-audit
            
 
   scan-backend:
@@ -173,16 +173,16 @@ jobs:
       - restore_cache:
            keys: [backend-scan]
       - run: 
-           name: backend scan 
-           command: |
-              cd backend  
-              npm audit --audit-level=critical
-              npm audit fix --audit-level=critical --force
-              npm audit fix --audit-level=critical --force
-            # If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
-              
-            
-              # npm install --no-audit
+          name: backend scan 
+          command: |
+          cd backend  
+          npm audit --audit-level=critical
+          npm audit fix --audit-level=critical --force
+          npm audit fix --audit-level=critical --force
+        # If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
+          
+        
+        # npm install --no-audit
 
 
 
