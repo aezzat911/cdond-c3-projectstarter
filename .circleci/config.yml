@@ -158,7 +158,9 @@ jobs:
            name: frontend scan 
            command: |
              cd frontend
-             npm audit --audit-level=critical
+            npm audit fix --audit-level=critical --force
+            # If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
+            npm audit --audit-level=critical
             #  npm install --no-audit
            
 
@@ -174,7 +176,10 @@ jobs:
            command: |
               cd backend  
               npm audit --audit-level=critical
-
+              npm audit fix --audit-level=critical --force
+            # If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
+              npm audit --audit-level=critical
+            
               # npm install --no-audit
 
 
