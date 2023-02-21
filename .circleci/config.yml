@@ -222,13 +222,14 @@ jobs:
             - project/.circleci/ansible/inventory.txt
 
       - destroy-environment
-      
+ 
 
   configure-infrastructure:
     docker:
       - image: cimg/base:stable 
     steps:
       - checkout
+      - install_awscli
       - install_ansible
       - add_ssh_keys:
           fingerprints: ["94:62:7e:fa:33:2f:6e:22:ae:da:bc:ce:60:9f:2e:d8"]
