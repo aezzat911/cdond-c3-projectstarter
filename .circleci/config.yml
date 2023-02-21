@@ -158,7 +158,8 @@ jobs:
            name: frontend scan 
            command: |
              cd frontend
-             npm install --no-audit
+             npm audit --audit-level=critical
+            #  npm install --no-audit
            
 
   scan-backend:
@@ -172,7 +173,9 @@ jobs:
            name: backend scan 
            command: |
               cd backend  
-              npm install --no-audit
+              npm audit --audit-level=critical
+
+              # npm install --no-audit
 
 
 
@@ -415,10 +418,10 @@ workflows:
           requires: [build-frontend]
       - test-backend:
           requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:
