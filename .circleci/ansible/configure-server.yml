@@ -2,7 +2,7 @@
 
 - name: "configuration play." 
   hosts: web
-  user: ec2-user
+  user: ubuntu
   become: true
   become_method: sudo
   become_user: root  
@@ -15,7 +15,7 @@
   pre_tasks:
     - name: "wait 600 seconds for target connection to become reachable/usable."
       pause:
-        seconds: 250     # 120 seconds is enough
+        seconds: 120     # 120 seconds is enough
 
     - name: Install Python
       package:
@@ -34,9 +34,6 @@
     - TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}"
     - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
     - TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
-    - AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID')}}"
-    - AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY')}}"
-    - AWS_DEFAULT_REGION: "{{ lookup('env', 'AWS_DEFAULT_REGION')}}"
   roles:
     - configure-server
     - configure-prometheus-node-exporter
