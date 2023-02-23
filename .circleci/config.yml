@@ -352,10 +352,8 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-            pm2 stop default
-            pm2 start npm -- start  
+ 
 
-            
       - destroy-environment
       - revert-migrations     
 
