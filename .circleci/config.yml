@@ -212,50 +212,27 @@ jobs:
       - destroy-environment
  
 
-  # configure-infrastructure:
-  #   docker:
-  #     - image: cimg/base:stable 
-  #   steps:
-  #     - checkout
-  #     - install_awscli
-  #     - install_ansible
-  #     - add_ssh_keys:
-  #         fingerprints: ["94:62:7e:fa:33:2f:6e:22:ae:da:bc:ce:60:9f:2e:d8"]
-  #     - attach_workspace:
-  #         at: ~/
-
-  #     - run:
-  #         name: Configure server
-  #         command: |
-  #           cd .circleci/ansible
-  #           cat inventory.txt
-  #           ansible-playbook -i inventory.txt configure-server.yml
-  #     - destroy-environment
-            
   configure-infrastructure:
     docker:
-      - image: python:3.9-alpine3.16
+      - image: cimg/base:stable 
     steps:
       - checkout
+      - install_awscli
+      - install_ansible
       - add_ssh_keys:
-          fingerprints: 
-            - "94:62:7e:fa:33:2f:6e:22:ae:da:bc:ce:60:9f:2e:d8" 
+          fingerprints: ["94:62:7e:fa:33:2f:6e:22:ae:da:bc:ce:60:9f:2e:d8"]
       - attach_workspace:
           at: ~/
+
       - run:
-          name: Install dependencies
-          command: |
-            apk add --no-cache tar gzip
-            pip install ansible awscli
-            apk add openssh-client
-              #alpine doesn't have ssh
-      - run:
-          name: Configure server and install the node_exporter for Prometheus
+          name: Configure server
           command: |
             cd .circleci/ansible
+            cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
-      - destroy-environment      
-
+      - destroy-environment
+            
+  
   run-migrations:
     docker:
       - image: cimg/node:13.8.0 
@@ -350,6 +327,7 @@ jobs:
             sudo apt install -y nodejs
             sudo npm install --global n
             sudo n 13.8.0
+            
             # install Ansible
             sudo apt update
             sudo apt install software-properties-common -y
@@ -374,7 +352,10 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
+            pm2 stop default
+            pm2 start npm -- start  
 
+            
       - destroy-environment
       - revert-migrations     
 
