@@ -21,12 +21,12 @@
 
 
 
-- name: "install Node js 13"
-  become: true
-  apt: 
-    name: ["nodejs"]
-    state: latest
-    update_cache: yes
+# - name: "install Node js 13"
+#   become: true
+#   apt: 
+#     name: ["nodejs"]
+#     state: latest
+#     update_cache: yes
 
 
 
