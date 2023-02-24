@@ -12,7 +12,11 @@
 - name: "Add Node.js from its source"
   become: true
   shell: |
+    sudo apt update && sudo apt install --assume-yes curl
     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+    sudo apt install --assume-yes nodejs 
+    
+
 
 
 - name: "install Node js 13"
