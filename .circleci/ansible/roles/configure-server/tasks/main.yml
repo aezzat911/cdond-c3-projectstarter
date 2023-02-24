@@ -5,10 +5,10 @@
     state: latest
     update_cache: yes
 
-- name: Install Node.js
-  apt:
-    name: nodejs
-    state: present
+# - name: Install Node.js
+#   apt:
+#     name: nodejs
+#     state: present
 
 #  - name: "Add Node.js from its source"
 #    become: true
@@ -18,14 +18,16 @@
 #     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 
 
-#  - name: "Add Node.js from its source"
-#    become: true
-#    shell: |
-#     sudo apt install curl 
-#     sudo apt update && sudo apt install --assume-yes curl
-#     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-#     sudo apt install --assume-yes nodejs 
-# sudo apt-get install -y Node.js 
+ - name: "Add Node.js from its source"
+   become: true
+   shell: |
+    sudo apt install curl 
+    sudo apt update && sudo apt install --assume-yes curl
+    curl -sL https://deb.nodesource.com/setup_10.12 | sudo -E bash -
+  #sudo apt install --assume-yes nodejs 
+    sudo apt-get install -y Node.js 
+    sudo npm i -g n
+    sudo n 10.12.0
 
 
 
@@ -38,10 +40,10 @@
 
 
 
-- name: Install npm
-  apt:
-    name: npm
-    state: present
+# - name: Install npm
+#   apt:
+#     name: npm
+#     state: present
 
 - name: Install pm2 global
   npm:
