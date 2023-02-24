@@ -5,10 +5,10 @@
     state: latest
     update_cache: yes
 
-- name: Install Node.js
-  apt:
-    name: nodejs
-    state: present
+# - name: Install Node.js
+#   apt:
+#     name: nodejs
+#     state: present
 
 
  - name: "Add Node.js from its source"
