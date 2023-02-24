@@ -5,17 +5,19 @@
     state: latest
     update_cache: yes
 
-# - name: Install Node.js
-#   apt:
-#     name: nodejs
-#     state: present
-- name: "Add Node.js from its source"
-  become: true
-  shell: |
-    sudo apt update && sudo apt install --assume-yes curl
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-    sudo apt install --assume-yes nodejs 
-    
+- name: Install Node.js
+  apt:
+    name: nodejs
+    state: present
+
+
+# - name: "Add Node.js from its source"
+#   become: true
+#   shell: |
+#     sudo apt update && sudo apt install --assume-yes curl
+#     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+#     sudo apt install --assume-yes nodejs 
+
 
 
 
