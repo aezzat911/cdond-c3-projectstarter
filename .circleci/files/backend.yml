@@ -1,4 +1,5 @@
-Description:  UdaPeople backend stack.
+Description: >
+  UdaPeople backend stack.
 
 Parameters:
   ID:
@@ -7,7 +8,7 @@ Parameters:
 
 Resources:
   InstanceSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
+    Type: AWS::EC2::SecurityGroup #remove the ss to fix 
     Properties:
       GroupName: !Sub UdaPeople-${ID}
       GroupDescription: Allow port 22 and port 3030.
@@ -21,7 +22,7 @@ Resources:
           ToPort: 3030
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp 
-          FromPort: 9100  # port of Prometheus collector
+          FromPort: 9100  #  for Prometheus port Node Exporter
           ToPort: 9100
           CidrIp: 0.0.0.0/0
 
@@ -31,13 +32,16 @@ Resources:
       InstanceType: t2.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
-      KeyName: udacity # If you use another key pair name, you should change this value to match.
-      # If this ami id is not available for you, you can find another (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html)
-      # Ubuntu 18 or higher works fine
-      ImageId: ami-0263e4deb427da90e  #ami-06878d265978313ca  #ami-0557a15b87f6559cf  #ami-09cd747c78a9add63   #ami-06878d265978313ca   ami-065bb5126e4504910
+      KeyName: udacity 
+      ImageId: ami-06878d265978313ca  #Tried different ami till work this Ubuntu 
       Tags:
-        - Key: Project
-          Value: Udapeople
         - Key: Name
           Value: !Sub backend-${ID}
-            
+        - Key: Project
+          Value: Udapeople
+          
+  InstanceEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref EC2Instance
